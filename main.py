@@ -5,7 +5,7 @@ def run_sqlmap(url):
     sqlmap_path = '/usr/bin/sqlmap'  # Example: '/usr/bin/sqlmap/sqlmap.py'
 
     # Command to run SQLMap with default options
-    command = [sqlmap_path, '-u', url, '--batch', '--risk=1', '--level=5']
+    command = [sqlmap_path, '-u', url, '--batch', '--risk=', '--level=5']
 
     try:
         # Run SQLMap command using subprocess

@@ -5,7 +5,7 @@ import re
 def run_sqlmap(url,crawl_level):
     # Replace with the path to SQLMap on your system
     sqlmap_path = '/usr/bin/sqlmap'  # Example: '/usr/bin/sqlmap/sqlmap.py'
-    crawl_level = '--crawl='+crawl_level
+    crawl_level = '--crawl='+cr
     # Command to run SQLMap with output redirection
     command = [sqlmap_path, '-u', url, '--batch', crawl_level ]
 
