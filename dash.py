@@ -2,9 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import scrolledtext
 from tkinter import messagebox
-from main import m_run_sqlmap
-from get_db_tableinfo import sqlmap_functionality
 import subprocess
+from get_db_tableinfo import sqlmap_functionality
 import shutil
 import os
 import re
@@ -12,76 +11,84 @@ import re
 class FirstTab:
     def __init__(self, master):
         self.master = master
+        self.scan_option = None
+        self.url = None
+        self.database_name = None
 
         # UI Elements
         self.label = tk.Label(master, text="Database Dashboard Security", font=('Helvetica', 20))
         self.label.pack(pady=20)
 
-        self.url_frame = tk.Frame(master)
-        self.url_frame.columnconfigure(0, weight=1)
-        self.url_frame.columnconfigure(1, weight=1)
+        self.option_label = tk.Label(master, text="Enter the number corresponding to the scan option:")
+        self.option_label.pack()
 
-        self.url_text = tk.Label(self.url_frame, text="Enter URL:", font=('Helvetica', 14))
-        self.url_text.grid(row=0, column=0)
-
-        self.main_container = tk.Entry(self.url_frame, font=('Helvetica', 14))
-        self.main_container.grid(row=0, column=1)
-
-        self.crawl_text = tk.Label(self.url_frame, text="Enter Crawl Level:", font=('Helvetica', 14))
-        self.crawl_text.grid(row=1, column=0)
-
-        self.crawl_level = tk.Entry(self.url_frame, font=('Helvetica', 14))
-        self.crawl_level.grid(row=1, column=1)
-
-        self.url_frame.pack(fill='x')
-
-        self.button = tk.Button(master, text="Run scan", font=('Helvetica', 14), command=self.run_sequel)
-        self.button.pack(pady=20, padx=20)
+        self.option_entry = tk.Entry(master, font=('Helvetica', 14))
+        self.option_entry.pack()
 
         self.result_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=80, height=20)
         self.result_text.pack()
 
-    def run_sequel(self):
+        self.button = tk.Button(master, text="Next", font=('Helvetica', 14), command=self.process_input)
+        self.button.pack(pady=10)
+
+    def process_input(self):
         try:
-            url = self.main_container.get()
-            crawl_level = self.crawl_level.get()
-            output_lines = m_run_sqlmap(url, crawl_level)
+            if self.scan_option is None:
+                self.scan_option = int(self.option_entry.get())
+                if self.scan_option < 1 or self.scan_option > 7:
+                    raise ValueError("Invalid scan option. Please enter a valid number.")
+                else:
+                    self.option_label.config(text="Enter URL:")
+                    self.option_entry.delete(0, tk.END)
+            elif self.url is None:
+                self.url = self.option_entry.get()
+                self.option_label.config(text="Enter database name:")
+                self.option_entry.delete(0, tk.END)
+            elif self.database_name is None:
+                self.database_name = self.option_entry.get()
+                self.run_sqlmap()
+        except ValueError as ve:
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, f"Error: {ve}")
 
-            # Display the output in the Tkinter window
-            self.result_text.delete(1.0, tk.END)  # Clear previous output
-            for line in output_lines:
-                self.result_text.insert(tk.END, line)
-        except Exception as e:
-            self.result_text.delete(1.0, tk.END)  # Clear previous output
-            self.result_text.insert(tk.END, f"Error: {e}")
+    def run_sqlmap(self):
+        try:
+            scan_options = {
+                1: ["--banner"],
+                2: ["--dbms", "MySQL"],
+                3: ["--dbs"],
+                4: ["--users"],
+                5: ["--current-db"],
+                6: ["--tables", "-D", ""],  # Database name will be filled later
+                7: ["--columns", "-D", "", "-T", ""],  # Database and table names will be filled later
+            }
 
-    # def run_sqlmap(self, url, crawl_level):
-    #     try:
-    #         clean_database_name = "information_schema"  # Replace this with the desired database name
-    #         command = ["sqlmap", '-u', url, '-D', clean_database_name, '--tables', '--level', '3', '--risk', '3']
+            selected_scan = list(scan_options.keys())[self.scan_option - 1]
+            arguments = scan_options[selected_scan]
 
-    #         result = subprocess.run(command, capture_output=True, text=True, check=True, input="")
-    #         table_names_match = re.search(rf'Database: {re.escape(clean_database_name)}\s*\n\[\d+ tables\](.+?)\n\n', result.stdout, re.DOTALL)
+            if "-D" in arguments:
+                arguments[arguments.index("-D") + 1] = self.database_name
 
-    #         if table_names_match:
-    #             table_names_section = table_names_match.group(1)
-    #             table_names = re.findall(r'\|\s+(\w+)\s+\|', table_names_section)
+            if "-T" in arguments:
+                table_name = input("Enter table name: ")
+                arguments[arguments.index("-T") + 1] = table_name
 
-    #             output_lines = [f"Tables for database '{clean_database_name}':"]
-    #             for index, table_name in enumerate(sorted(table_names), start=1):
-    #                 output_lines.append(f"{index}. {table_name}")
+            output = self.run_sqlmap_command(arguments)
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, f"\n{selected_scan}:")
+            self.result_text.insert(tk.END, output)
+        except subprocess.CalledProcessError as e:
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, f"Error running SQLMap: {e}")
 
-    #             output_lines.append(f"Output written to 'output.txt'")
+    def run_sqlmap_command(self, arguments):
+        try:
+            command = ["sqlmap", "-u", self.url] + arguments
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            return result.stdout
+        except subprocess.CalledProcessError as e:
+            raise subprocess.CalledProcessError(f"Error running SQLMap: {e}")
 
-    #             with open("output.txt", 'w') as output_file:
-    #                 for line in output_lines:
-    #                     output_file.write(line + '\n')
-
-    #             return output_lines
-    #         else:
-    #             return [f"No tables found for database '{clean_database_name}'."]
-    #     except subprocess.CalledProcessError as e:
-    #         raise Exception(f"Error running SQLMap: {e}")
 
 
 class SecondTab:
@@ -222,13 +229,14 @@ class ThirdTab:
         if sqlmap_path is None:
             raise Exception("SQLMap not found. Make sure it's installed and available in the system PATH.")
         return sqlmap_path
-    
+
+   
 class FourthTab:
     def __init__(self, master):
         self.master = master
 
         # UI Elements
-        self.label = tk.Label(master, text="Database Dashboard Security", font=('Helvetica', 20))
+        self.label = tk.Label(master, text="Get DB Table Info", font=('Helvetica', 20))
         self.label.pack(pady=20)
 
         self.url_frame = tk.Frame(master)
@@ -280,6 +288,7 @@ class FourthTab:
 
 
 
+
 class DashboardGUI:
     def __init__(self, master):
         self.master = master
@@ -313,9 +322,7 @@ class DashboardGUI:
         self.get_tables_info_content = FourthTab(self.tables_info_tab)
         
 
-
 if __name__ == "__main__":
     root = tk.Tk()
     app = DashboardGUI(root)
     root.mainloop()
-
