@@ -1,9 +1,0 @@
-Tables for database 'acuart':
-1. artists
-2. carts
-3. categ
-4. featured
-5. guestbook
-6. pictures
-7. products
-8. users

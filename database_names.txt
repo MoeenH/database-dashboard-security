@@ -1,8 +1,0 @@
-[*] acuart
-[*] information_schema
-
-[02:59:13] [INFO] fetched data logged to text files under '/home/moeen/.local/share/sqlmap/output/testphp.vulnweb.com'
-[02:59:13] [WARNING] your sqlmap version is outdated
-
-[*] ending @ 02:59:13 /2024-01-06/
-
