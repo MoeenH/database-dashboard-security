@@ -1,5 +1,18 @@
-
 import subprocess
+
+class ScanOption:
+    def __init__(self):
+        self.scan_options = {
+            "Banner Information": ["--banner"],
+            "Identify Database Management System (DBMS)": ["--dbms", "MySQL"],
+            "Enumerate Databases": ["--dbs"],
+            "Enumerate Users": ["--users"],
+            "Retrieve Current Database": ["--current-db"],
+            "Enumerate Tables": ["--tables", "-D"],
+            "Enumerate Columns": ["--columns", "-D", "-T"],
+            "Dump Table Data": ["--dump", "-D", "-T"],
+            # Add more options as needed...
+        }
 
 def run_sqlmap(url, args):
     try:
@@ -10,32 +23,22 @@ def run_sqlmap(url, args):
         
         return result.stdout  # Returning the output
     except subprocess.CalledProcessError as e:
-        return f"Error: {e.output}"  # Returning error message if any
+        return f"Error: {e.output}"  # Returning an error message if any
 
 def main():
-    # Dictionary mapping scan options to SQLMap arguments
-    scan_options = {
-        "Banner Information": ["--banner"],
-        "Identify Database Management System (DBMS)": ["--dbms", "MySQL"],
-        "Enumerate Databases": ["--dbs"],
-        "Enumerate Users": ["--users"],
-        "Retrieve Current Database": ["--current-db"],
-        "Enumerate Tables": ["--tables", "-D"],
-        "Enumerate Columns": ["--columns", "-D", "-T"],
-        "Dump Table Data": ["--dump", "-D", "-T"],
-        # Add more options as needed...
-    }
+    # Create an instance of the ScanOption class
+    options = ScanOption()
 
     print("\nAvailable SQLMap Scans:")
-    for idx, option in enumerate(scan_options.keys(), start=1):
+    for idx, option in enumerate(options.scan_options.keys(), start=1):
         print(f"{idx}. {option}")
     
     try:
         choice = int(input("\nEnter the number corresponding to the scan option: "))
-        selected_scan = list(scan_options.keys())[choice - 1]
+        selected_scan = list(options.scan_options.keys())[choice - 1]
         
-        if selected_scan in scan_options:
-            arguments = scan_options[selected_scan]
+        if selected_scan in options.scan_options:
+            arguments = options.scan_options[selected_scan]
            
             url = input("Enter URL: ")
             if "-D" in arguments:
@@ -61,7 +64,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-''''url = "http://testphp.vulnweb.com/listproducts.php?cat=1"'''
