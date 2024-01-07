@@ -1,1 +1,5 @@
 __pycache__/main.cpython-310.pyc
+./output
+database_names.txt
+sqlmap_output.txt
+target_urls.txt

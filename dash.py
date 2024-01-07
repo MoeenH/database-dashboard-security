@@ -1,101 +1,55 @@
 import tkinter as tk
-from tkinter import scrolledtext
 from tkinter import ttk
+from tkinter import scrolledtext
+from tkinter import messagebox
 import subprocess
-from basic_scan import ScanOption
-
-
-class ScanOption:
-    def __init__(self):
-        self.scan_options = {
-            "Banner Information": ["--banner"],
-            "Identify Database Management System (DBMS)": ["--dbms", "MySQL"],
-            "Enumerate Databases": ["--dbs"],
-            "Enumerate Users": ["--users"],
-            "Retrieve Current Database": ["--current-db"],
-            "Enumerate Tables": ["--tables", "-D"],
-            "Enumerate Columns": ["--columns", "-D", "-T"],
-            "Dump Table Data": ["--dump", "-D", "-T"],
-            # Add more options as needed...
-        }
-
-def run_sqlmap(url, args):
-    try:
-        command = ["sqlmap", "-u", url] + args
-        result = subprocess.run(command, capture_output=True, text=True)
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        return f"Error: {e.output}"
+from get_db_tableinfo import sqlmap_functionality
+import shutil
+import os
+import re
+import get_target_urls
 
 class FirstTab:
     def __init__(self, master):
         self.master = master
         self.scan_option = None
         self.url = None
-        self.database_name = None
+        self.second_input = None
 
+        # UI Elements
         self.label = tk.Label(master, text="Database Dashboard Security", font=('Helvetica', 20))
         self.label.pack(pady=20)
 
-        self.option_label = tk.Label(master, text="Enter the number corresponding to the scan option:")
+        self.option_label = tk.Label(master, text="Enter the Main URL:")
         self.option_label.pack()
 
-        self.listbox = tk.Listbox(master, width=40, height=10)
-        self.listbox.pack(padx=20, pady=20)
+        self.option_entry = tk.Entry(master, font=('Helvetica', 14))
+        self.option_entry.pack()
 
-        options = ScanOption()
-        for key in options.scan_options.keys():
-            self.listbox.insert(tk.END, key)
+        self.second_input_label = tk.Label(master, text="Enter Crawl Level:")
+        self.second_input_label.pack()
 
-        self.result_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=80, height=20)
+        self.second_input_entry = tk.Entry(master, font=('Helvetica', 14))
+        self.second_input_entry.pack()
+
+        self.result_text = tk.Text(master, wrap=tk.WORD, width=80, height=20)
         self.result_text.pack()
 
-        self.input_label = tk.Label(master, text="Enter URL:")
-        self.input_label.pack()
-
-        self.url_entry = tk.Entry(master, width=50)
-        self.url_entry.pack()
-
-        self.button = tk.Button(master, text="Next", font=('Helvetica', 14), command=self.process_input)
+        self.button = tk.Button(master, text="Run", font=('Helvetica', 14), command=self.run_function)
         self.button.pack(pady=10)
 
-    def process_input(self):
-        try:
-            if self.scan_option is None:
-                self.scan_option = int(self.listbox.curselection()[0]) + 1
-                if self.scan_option < 1 or self.scan_option > 7:
-                    raise ValueError("Invalid scan option. Please enter a valid number.")
-                else:
-                    self.option_label.config(text="Enter database name:")
-            elif self.url is None:
-                self.url = self.url_entry.get()
-                self.input_label.config(text="Enter database name:")
-            elif self.database_name is None:
-                self.database_name = self.url_entry.get()
-                self.run_sqlmap()
-        except ValueError as ve:
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, f"Error: {ve}")
+    def run_function(self):
+        self.option_label.config(text="Enter URL:")
+        self.url = self.option_entry.get()
+        self.second_input = self.second_input_entry.get()
+        output = get_target_urls.run_sqlmap(self.url, self.second_input)
+        self.show_output(output)
 
-    def run_sqlmap(self):
-        try:
-            options = ScanOption()
-            selected_scan = list(options.scan_options.keys())[self.scan_option - 1]
-            arguments = options.scan_options[selected_scan]
+    def show_output(self, output):
+        self.result_text.delete(1.0, tk.END)
+        self.result_text.insert(tk.END, str(output))
 
-            if "-D" in arguments:
-                arguments[arguments.index("-D") + 1] = self.database_name
 
-            output = run_sqlmap(self.url, arguments)
-
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, f"\n{selected_scan}:")
-            self.result_text.insert(tk.END, output)
-        except subprocess.CalledProcessError as e:
-            self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, f"Error running SQLMap: {e}")
-
-    
 class SecondTab:
     def __init__(self, master):
         self.master = master
@@ -292,6 +246,8 @@ class FourthTab:
             self.result_text.insert(tk.END, f"Error: {e}")
 
 
+
+
 class DashboardGUI:
     def __init__(self, master):
         self.master = master
@@ -323,6 +279,7 @@ class DashboardGUI:
         
         #Fourth Tab
         self.get_tables_info_content = FourthTab(self.tables_info_tab)
+        
 
 if __name__ == "__main__":
     root = tk.Tk()

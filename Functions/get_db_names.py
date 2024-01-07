@@ -76,7 +76,7 @@ def sqlmap_dbs(url, output_file_path):
     #     raise Exception(f"Error running SQLMap: {e}")
 
 if __name__ == "__main__":
-    target_url = "http://testphp.vulnweb.com/listproducts.php?cat=1"
+    target_url = input("Enter the URL you found after crawl:")
     output_file_path = "database_names.txt"  # Change this to the desired output file path
 
     try:

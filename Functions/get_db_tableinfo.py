@@ -24,13 +24,13 @@ def get_user_input():
             print("Invalid input. Please enter a valid number.")
 
 # Function to perform SQLMap-like functionality
-def sqlmap_functionality(base_url, database_filename, table_filename):
+def sqlmap_functionality(base_url, database_filename, table_name):
     # Extract database name
     database_name = extract_database_name(database_filename)
     if not database_name:
         print("Error: Unable to extract database name")
         return
-
+    '''
     # Get user input for table selection
     table_number = get_user_input()
 
@@ -44,7 +44,7 @@ def sqlmap_functionality(base_url, database_filename, table_filename):
             return
 
         table_name = matches[0]
-
+'''
     # Build SQLMap command
     sqlmap_command = [
         "sqlmap",
@@ -63,8 +63,20 @@ def sqlmap_functionality(base_url, database_filename, table_filename):
 
 # Example usage
 if __name__ == "__main__":
-    base_url = "http://testphp.vulnweb.com/listproducts.php"
-    database_filename = "database_names.txt"
+    base_url = input("Enter The URL From where you found the tables")
     table_filename = "output.txt"
+    
 
-    sqlmap_functionality(base_url, database_filename, table_filename)
+    try:
+        with open(table_filename, 'r') as file:
+            contents = file.read()
+            print(contents)
+    except FileNotFoundError:
+        print("File not found or path is incorrect.")
+    except Exception as e:
+        print(f"Error occurred: {e}")
+
+    database_filename = "database_names.txt"
+    table_name = input("Enter the table name you want info about: ")
+
+    sqlmap_functionality(base_url, database_filename, table_name)

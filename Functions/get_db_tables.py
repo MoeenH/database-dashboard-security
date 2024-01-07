@@ -51,16 +51,20 @@ def sqlmap_tables(url, database_name, output_file_path):
         raise Exception(f"Error running SQLMap: {e}")
 
 if __name__ == "__main__":
-    target_url = "http://testphp.vulnweb.com/listproducts.php?cat=1"
+    target_url = input("Enter The URL you used to find the database: ")
+    database_name = input("Enter The name database you found:")
     database_name_file = "database_names.txt"
     output_file_path = "output.txt"  # Change this to the desired output file path
 
+    sqlmap_tables(target_url, database_name, output_file_path)
+'''
     try:
         # Read the database name from the file
         with open(database_name_file, 'r') as db_file:
             database_name = db_file.readline().strip()
 
-        # Fetch tables for the specified database and store the output in a text file
-        sqlmap_tables(target_url, database_name, output_file_path)
+        Fetch tables for the specified database and store the output in a text file
+        
     except Exception as e:
         print(f"Error: {e}")
+'''

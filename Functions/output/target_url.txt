@@ -1,0 +1,2 @@
+SQL injection vulnerability has already been detected against 'testphp.vulnweb.com'. Do you want to skip further tests involving it? [Y/n] Y
+[03:44:51] [INFO] you can find results of scanning in multiple targets mode inside the CSV file '/home/moeen/.local/share/sqlmap/output/results-01082024_0344am.csv'
