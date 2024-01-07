@@ -1,3 +1,4 @@
+
 <p align="center"><img src="https://socialify.git.ci/MoeenH/database-dashboard-security/image?font=Source%20Code%20Pro&amp;forks=1&amp;issues=1&amp;language=1&amp;name=1&amp;pattern=Circuit%20Board&amp;pulls=1&amp;stargazers=1&amp;theme=Auto" alt="project-image"></p>
 
 <p id="description">Database Dashboard Security is a user-friendly application designed to simplify and streamline SQL injection vulnerability testing for web developers and security professionals. By leveraging the power of popular tools like sqlmap and others. Database Dashboard Security offers a consolidated platform to scan your websites and applications for potential vulnerabilities helping you proactively address security risks.</p>

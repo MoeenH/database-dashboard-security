@@ -1,0 +1,7 @@
+[*] acuart
+[*] information_schema
+
+[18:36:40] [INFO] fetched data logged to text files under '/home/primus/.local/share/sqlmap/output/testphp.vulnweb.com'
+
+[*] ending @ 18:36:40 /2024-01-07/
+

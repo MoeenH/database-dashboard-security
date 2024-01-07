@@ -1,3 +1,4 @@
+
 import subprocess
 
 def run_sqlmap(url, args):
@@ -16,11 +17,13 @@ def main():
     scan_options = {
         "Banner Information": ["--banner"],
         "Identify Database Management System (DBMS)": ["--dbms", "MySQL"],
+        "Enumerate Databases": ["--dbs"],
         "Enumerate Users": ["--users"],
+        "Retrieve Current Database": ["--current-db"],
         "Enumerate Tables": ["--tables", "-D"],
         "Enumerate Columns": ["--columns", "-D", "-T"],
         "Dump Table Data": ["--dump", "-D", "-T"],
-       
+        # Add more options as needed...
     }
 
     print("\nAvailable SQLMap Scans:")
@@ -58,6 +61,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 ''''url = "http://testphp.vulnweb.com/listproducts.php?cat=1"'''

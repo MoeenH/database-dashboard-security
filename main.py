@@ -12,7 +12,7 @@ def set_fd_nonblocking(fd):
     fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
 
-def run_sqlmap(url, crawl_level):
+def m_run_sqlmap(url, crawl_level):
     # Replace with the path to SQLMap on your system
     sqlmap_path = '/usr/bin/sqlmap'  # Example: '/usr/bin/sqlmap/sqlmap.py'
     crawl_level = '--crawl=' + crawl_level
@@ -75,5 +75,5 @@ if __name__ == "__main__":
     main_crawl_level = input("Enter the Crawl Level: ")
 
     # Run SQLMap with the provided URL
-    run_sqlmap(main_url, main_crawl_level)
+    m_run_sqlmap(main_url, main_crawl_level)
 

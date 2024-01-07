@@ -62,8 +62,9 @@ def sqlmap_functionality(base_url, database_filename, table_filename):
         print(f"Error: SQLMap execution failed with return code {e.returncode}")
 
 # Example usage
-base_url = "http://testphp.vulnweb.com/listproducts.php"
-database_filename = "database_names.txt"
-table_filename = "output.txt"
+if __name__ == "__main__":
+    base_url = "http://testphp.vulnweb.com/listproducts.php"
+    database_filename = "database_names.txt"
+    table_filename = "output.txt"
 
-sqlmap_functionality(base_url, database_filename, table_filename)
+    sqlmap_functionality(base_url, database_filename, table_filename)
