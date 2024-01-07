@@ -27,13 +27,7 @@ git clone https://github.com/MoeenH/database-dashboard-security
 python3.7 -m venv venv source venv/bin/activate
 ```
 
-<p>3. Install Dependencies:</p>
-
-```
-pip install -r requirements.txt
-```
-
-<p>4. Run the Application:</p>
+<p>3. Run the Application:</p>
 
 ```
 python dashboard.py
@@ -49,3 +43,11 @@ Technologies used in the project:
 *   Linux
 *   tkinter
 *   sqlmap
+
+<h2>💖Like my work?</h2>
+
+Collaborators:
+- Moeen Haider : [MoeenH](https://github.com/MoeenH)
+- Muhammad Faraz : [Lacaysse](https://github.com/Lacaysse)
+- Babar Ali : [babarlibra009](https://github.com/babarlibra009)
+- Sikandar Ali : [Ask-Sikandar](https://github.com/Ask-Sikandar)
