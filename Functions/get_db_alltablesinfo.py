@@ -3,13 +3,12 @@ import subprocess
 # URL of the vulnerable site
 url = "http://testphp.vulnweb.com/listproducts.php?cat=1"
 
-# Load and clean database names from the file
 with open('database_names.txt', 'r') as file:
     database_names = [name.strip().replace('[*] ', '') for name in file.readlines()]
 
 # Iterate through each cleaned database name
 for database_name in database_names:
-    # Construct the sqlmap command with additional options
+   
     sqlmap_command = [
         'sqlmap',
         '-u', f'{url}',

@@ -26,7 +26,7 @@ def run_sqlmap(url, args):
         return f"Error: {e.output}"  # Returning an error message if any
 
 def main():
-    # Create an instance of the ScanOption class
+    
     options = ScanOption()
 
     print("\nAvailable SQLMap Scans:")

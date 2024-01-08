@@ -1,7 +1,6 @@
 import subprocess
 import re
 
-# Function to extract the database name from database_name.txt
 def extract_database_name(filename):
     with open(filename, 'r') as file:
         content = file.read()
@@ -11,7 +10,6 @@ def extract_database_name(filename):
         else:
             return None
 
-# Function to prompt the user and get the selected table number
 def get_user_input():
     while True:
         try:
@@ -23,9 +21,9 @@ def get_user_input():
         except ValueError:
             print("Invalid input. Please enter a valid number.")
 
-# Function to perform SQLMap-like functionality
+
 def sqlmap_functionality(base_url, database_filename, table_name):
-    # Extract database name
+    
     database_name = extract_database_name(database_filename)
     if not database_name:
         print("Error: Unable to extract database name")
@@ -45,7 +43,7 @@ def sqlmap_functionality(base_url, database_filename, table_name):
 
         table_name = matches[0]
 '''
-    # Build SQLMap command
+    
     sqlmap_command = [
         "sqlmap",
         "-u", f"{base_url}?cat=1",
@@ -55,13 +53,12 @@ def sqlmap_functionality(base_url, database_filename, table_name):
         "--batch"
     ]
 
-    # Execute SQLMap command
+   
     try:
         subprocess.run(sqlmap_command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error: SQLMap execution failed with return code {e.returncode}")
 
-# Example usage
 if __name__ == "__main__":
     base_url = input("Enter The URL From where you found the tables")
     table_filename = "output.txt"
